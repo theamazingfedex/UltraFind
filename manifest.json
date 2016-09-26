@@ -1,0 +1,26 @@
+{
+  "manifest_version": 2,
+
+  "name": "Chome Multi-Search",
+  "description": "This extension find multiple terms on a single webpage",
+  "version": "1.0",
+
+    "content_scripts": [
+        {
+            "matches": ["*://*/*"],
+            "css": [
+                    "spectrum.css"],
+            "js": [
+                    "jquery.min.js",
+                    "jquery-ui-1.10.3.custom.min.js",
+                    "jquery-ui-1.10.3.custom.js",
+                    "spectrum.js",
+                    "finderscript.js"],
+            "run_at": "document_end"
+        }
+    ],
+    "permissions": [
+        "*://*/*",
+        "storage"
+    ]
+}
