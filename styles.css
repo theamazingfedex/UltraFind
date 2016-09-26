@@ -1,0 +1,43 @@
+#hiddenFinderContainer
+{
+  position: relative !important;
+  top: 0 !important;
+  right: 0 !important;
+  width: 100% !important;
+  font-family: Arial, "Times New Roman" !important;
+}
+
+#hiddenFinderWindow
+{
+  max-width: 250px !important;
+  min-width: 250px !important;
+  position: fixed !important;
+  top: 0 !important;
+  right: 0 !important;
+  z-index: 99999 !important;
+  background-color: #888 !important;
+  padding: 10px !important;
+  font: 10px !important;
+  border-bottom-left-radius: 15px !important;
+}
+
+#finderSearchButton
+{
+  background-color: #ccc !important;
+  border-radius: 5px !important;
+  font-style: bold !important;
+  width: 75px !important;
+  padding: 3px !important;
+  margin: auto !important;
+  margin-bottom: 3px !important;
+}
+
+#finderResetButton
+{
+  background-color: #ccc222 !important;
+  border-radius: 5px !important;
+  font-style: bold !important;
+  width: 75px !important;
+  padding: 3px !important;
+  margin: auto !important;
+}
