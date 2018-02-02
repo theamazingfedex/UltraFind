@@ -18,6 +18,9 @@ var finderWindow =
   '</div></div>';
 
 
+  // originalTextColors keeps track of the text color of each word that has been highlighted, so that we can restore that font color when we clearHighlightedWords.
+let originalTextColors = {};
+
 // Getting everything ready
 $(document).ready(function(){
   WordFinder.getReady();
@@ -138,7 +141,7 @@ var WordFinder = {
   //  tryLight is called after a search has been initiated.
   //      it takes the word and tells .wrapInTag() to wrap each iteration of the search term with the
   //      appropriate tag to enable highlighting of the term.
-  tryLight: function(term, color){
+  tryLight: function(term, highlightColor, textColor){
     let tags = ['p', 'li'];
     tags.map((tag) => {
       $(tag).wrapInTag({
@@ -147,7 +150,11 @@ var WordFinder = {
       });
     });
 
-    $('.finderMarks'+ term +'').css('background-color', color);
+    $('.finderMarks'+ term +'').css('background-color', highlightColor);
+    if (originalTextColors[term] == undefined){
+      originalTextColors[term] = $('.finderMarks'+ term +'').css('color');
+    }
+    $('.finderMarks'+ term +'').css('color', textColor);
   },
 
   //  clearHighlightedWords is called when the user presses the 'Esc' key or clicks the 'Reset' button.
@@ -155,6 +162,9 @@ var WordFinder = {
   //      and resets the background-color of each highlighted element.
   clearHighlightedWords: function(){
     $('.finderMarks').css('background-color', "");
+    for (var term in originalTextColors) {
+      $('.finderMarks'+term).css('color', originalTextColors[term]);
+    }
   },
 
   //  initiateSearch is called when the 'Search' button is clicked or 'Enter' key is pressed.
@@ -164,8 +174,9 @@ var WordFinder = {
     var input = $('#finderInput').val();
     var pickedColor =  $('#finderColorPicker').val();
     var color = pickedColor == '#000000' ? '#FF0000' : pickedColor;
+    var textColor = getTextColor(color);
     if (input.length > 0)
-      WordFinder.tryLight(input, color);
+      WordFinder.tryLight(input, color, textColor);
     else
       $('#finderInput').effect('highlight', {color:''+color+''}, 500);
 
@@ -190,6 +201,27 @@ function invertColor(hexTripletColor) {
   color = ("000000" + color).slice(-6); // pad with leading zeros
   color = '#' + color; // prepend #
   return color;
+}
+
+function hexToRgb(hex) {
+  let result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+  return result ? {
+      r: parseInt(result[1], 16),
+      g: parseInt(result[2], 16),
+      b: parseInt(result[3], 16)
+  } : null;
+}
+
+function getTextColor(backgroundColor) {
+  let textColor = '#000000';
+  // let [r, g, b] = backgroundColor.split('#')[1].split(/(?=(?:..)*$)/);
+  let {r, g, b} = hexToRgb(backgroundColor);
+  let redContrast = r/255.0;
+  let greenContrast = g/255.0;
+  let blueContrast = b/255.0;
+  let luminance = ((redContrast * 299) + (greenContrast * 587) + (blueContrast * 114)) / 1000;
+
+  return luminance > 0.279 ? "#000000" : "#FFFFFF";
 }
 
 //  wrapInTag is implemented here as a jQuery function to enable use with the jQuery selector.
