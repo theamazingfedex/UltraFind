@@ -32,6 +32,13 @@
   margin-bottom: 3px !important;
 }
 
+.buttonText {
+  cursor: pointer;
+}
+.buttonText:hover {
+  filter: brightness(120%);
+}
+
 #finderResetButton
 {
   background-color: #ccc222 !important;

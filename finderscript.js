@@ -1,9 +1,7 @@
 /**
- * Created with JetBrains RubyMine.
- * User: Daniel
+ * User: Daniel Wood
  * Date: 10/31/13
  * Time: 7:54 AM
- * To change this template use File | Settings | File Templates.
  */
 // finderCounter keeps track of what state the application is in.
 var finderCounter = 0;
@@ -15,8 +13,8 @@ var finderWindow =
   '<span>'+
   '<input id="finderInput" type="text" name="term"/>' +colorPicker+
   '</span>'+
-  '<div id="finderSearchButton">Search</div>'+
-  '<div id="finderResetButton">Reset</div>'+
+  '<div id="finderSearchButton" class="buttonText">Search</div>'+
+  '<div id="finderResetButton" class="buttonText">Reset</div>'+
   '</div></div>';
 
 
@@ -90,7 +88,7 @@ var WordFinder = {
       //at: "right top",
       //of: "body"
     //});
-    $('#hiddenFinderWindow').draggable();
+    $('#hiddenFinderWindow');
 
     //$('#finderSearchButton').css('background-color', '#CCC');
     //$('#finderSearchButton').css('border-radius', '5px');
@@ -141,10 +139,12 @@ var WordFinder = {
   //      it takes the word and tells .wrapInTag() to wrap each iteration of the search term with the
   //      appropriate tag to enable highlighting of the term.
   tryLight: function(term, color){
-
-    $('p').wrapInTag({
-      words: [term],
-      tag: '<span class="finderMarks'+ term +' finderMarks">'
+    let tags = ['p', 'li'];
+    tags.map((tag) => {
+      $(tag).wrapInTag({
+        words: [term],
+        tag: '<span class="finderMarks' + term + ' finderMarks">'
+      });
     });
 
     $('.finderMarks'+ term +'').css('background-color', color);
@@ -206,12 +206,12 @@ $.fn.wrapInTag = function(opts) {
   return this.each(function() {
     var html = $(this).html();
     for (var i = 0, len = o.words.length; i < len; i++) {
-      var re = new RegExp('\\b' + o.words[i], "gi");
+      var re = new RegExp('\\b' + o.words[i] + '+(?![^<]*\\>)', "gi");
       html = html.replace(re, o.tag + '$&' + o.tag.replace('<', '</'));
     }
     $(this).html(html);
   });
 }
-chrome.commands.onCommand.addListener(function(command) {
-  console.log('onCommand event received for message: ', command);
-});;
+// chrome.commands.onCommand.addListener(function(command) {
+//   console.log('onCommand event received for message: ', command);
+// });
