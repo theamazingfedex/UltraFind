@@ -5,6 +5,7 @@
  */
 // finderCounter keeps track of what state the application is in.
 var finderCounter = 0;
+let tags = ['div', 'span', 'p', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'b', 'i'];
 var colorPicker = '<input id="finderColorPicker" type="color" class="finderColorWheels" value="#F00" style="width:25px"/>';
 var finderWindow =
   '<div id="hiddenFinderContainer">'+
@@ -142,7 +143,6 @@ var WordFinder = {
   //      it takes the word and tells .wrapInTag() to wrap each iteration of the search term with the
   //      appropriate tag to enable highlighting of the term.
   tryLight: function(term, highlightColor, textColor){
-    let tags = ['p', 'li'];
     tags.map((tag) => {
       $(tag).wrapInTag({
         words: [term],
