@@ -7,16 +7,19 @@
 var finderCounter = 0;
 let tags = ['div', 'span', 'p', 'li', 'h1', 'h2', 'h3', 'h4', 'h5', 'h6', 'strong', 'b', 'i'];
 var colorPicker = '<input id="finderColorPicker" type="color" class="finderColorWheels" value="#F00" style="width:25px"/>';
-var finderWindow =
-  '<div id="hiddenFinderContainer">'+
-  '<div id="hiddenFinderWindow">'+
-  '<h2>Find Stuff</h2>'+
-  '<span>'+
-  '<input id="finderInput" type="text" name="term"/>' +colorPicker+
-  '</span>'+
-  '<div id="finderSearchButton" class="buttonText">Search</div>'+
-  '<div id="finderResetButton" class="buttonText">Reset</div>'+
-  '</div></div>';
+var finderWindow = `
+<div id="hiddenFinderContainer">
+  <div id="hiddenFinderWindow">
+    <h2>Find Stuff</h2>
+    <span>
+      <input id="finderInput" type="text" name="term"/>
+      ${colorPicker}
+    </span>
+    <div id="finderSearchButton" class="buttonText">Search</div>
+    <div id="finderResetButton" class="buttonText">Reset</div>
+  </div>
+</div>
+`;
 
 
   // originalTextColors keeps track of the text color of each word that has been highlighted, so that we can restore that font color when we clearHighlightedWords.
@@ -149,21 +152,36 @@ var WordFinder = {
         tag: '<span class="finderMarks' + term + ' finderMarks">'
       });
     });
-
-    $('.finderMarks'+ term +'').css('background-color', highlightColor);
-    if (originalTextColors[term] == undefined){
-      originalTextColors[term] = $('.finderMarks'+ term +'').css('color');
-    }
-    $('.finderMarks'+ term +'').css('color', textColor);
+    this.createAndApplyCssTag(term, highlightColor, textColor);
   },
 
   //  clearHighlightedWords is called when the user presses the 'Esc' key or clicks the 'Reset' button.
   //      it simply uses the class selector for all my highlighted elements,
   //      and resets the background-color of each highlighted element.
   clearHighlightedWords: function(){
-    $('.finderMarks').css('background-color', "");
-    for (var term in originalTextColors) {
-      $('.finderMarks'+term).css('color', originalTextColors[term]);
+    // TODO: this still needs to be able to remove specific finderMarks as well, rather than just all of them
+    $('.finderMarks').removeClass();
+  },
+
+  // createAndApplyCssTag is called when trying to highlight a word, and is 
+  //   expected to assemble a cssClass and add it to a custom style tag on the
+  //   page, creating the style tag if it does not already exist.
+  createAndApplyCssTag: function(term, highlightColor, textColor) {
+    let loadedStyleTag = $('#ultrafind-styles');
+    let loadedStyleTagExists = loadedStyleTag.length > 0;
+    let cssClass =`
+      .finderMarks${term} {
+        background-color: ${highlightColor};
+        color: ${textColor}
+      }
+    `;
+
+    if (loadedStyleTagExists) {
+      loadedStyleTag.append(cssClass);
+    }
+    else {
+      $('html > head').append(
+        `<style type="text/css" id="ultrafind-styles">${cssClass}</style>`);
     }
   },
 
@@ -236,12 +254,13 @@ $.fn.wrapInTag = function(opts) {
   }, opts);
 
   return this.each(function() {
-    var html = $(this).html();
+    let $this = $(this);
+    var html = $this.html();
     for (var i = 0, len = o.words.length; i < len; i++) {
       var re = new RegExp('\\b' + o.words[i] + '+(?![^<]*\\>)', "gi");
       html = html.replace(re, o.tag + '$&' + o.tag.replace('<', '</'));
     }
-    $(this).html(html);
+    $this.html(html);
   });
 }
 // chrome.commands.onCommand.addListener(function(command) {
