@@ -10,13 +10,29 @@ var colorPicker = '<input id="finderColorPicker" type="color" class="finderColor
 var finderWindow = `
 <div id="hiddenFinderContainer">
   <div id="hiddenFinderWindow">
-    <h2>Find Stuff</h2>
-    <span>
+    <div id="hiddenFinderTitle">Find Stuff</div>
+    <div id="hiddenFinderInputContainer">
       <input id="finderInput" type="text" name="term"/>
       ${colorPicker}
-    </span>
+    </div>
     <div id="finderSearchButton" class="buttonText">Search</div>
     <div id="finderResetButton" class="buttonText">Reset</div>
+  </div>
+  <div id="hiddenFinderDrawer" class="collapsed">
+    <div id="hiddenFinderHistoryCollapsed">
+      <div class="hiddenFinderHistoryHeader">
+        <div class="pointerArrow">&#x25ba;</div>&nbsp; Expand...
+      </div>
+    </div>
+    <div id="hiddenFinderHistoryExpanded">
+      <div class="hiddenFinderHistoryItem">first</div>
+      <div class="hiddenFinderHistoryItem">second</div>
+      <div class="hiddenFinderHistoryItem">third</div>
+      <div class="hiddenFinderHistoryItem">fourth</div>
+      <div id="hiddenFinderHistoryExpandedHeader" class="hiddenFinderHistoryHeader">
+        <div class="pointerArrow">&#x25b2;</div>&nbsp; Collapse...
+      </div>
+    </div>
   </div>
 </div>
 `;
@@ -35,6 +51,14 @@ $(document).ready(function(){
   $(document).on('click', '#finderResetButton', function(){
     WordFinder.clearHighlightedWords();
   });
+  $(document).on('click', '#hiddenFinderHistoryCollapsed', function() {
+    $('#hiddenFinderDrawer').removeClass('collapsed');
+    $('#hiddenFinderDrawer').addClass('expanded');
+  });
+  $(document).on('click', '#hiddenFinderHistoryExpandedHeader', function() {
+    $('#hiddenFinderDrawer').removeClass('expanded');
+    $('#hiddenFinderDrawer').addClass('collapsed');
+  })
   $(document).keydown(function (e){
     if (e.which === 13){
       WordFinder.initiateSearch();
